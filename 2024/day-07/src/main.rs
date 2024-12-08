@@ -35,13 +35,8 @@ fn fold_equations(equations: &Vec<(u64, Vec<u64>)>, ops: &[fn(u64, u64) -> u64])
 
 fn crunch(target: u64, head: u64, tail: &[u64], ops: &[fn(u64, u64) -> u64]) -> bool {
     match tail {
-        [next, rest @ ..] => {
-            ops.iter().any(|op| {
-                let new_head = op(head, *next);
-                crunch(target, new_head, rest, ops)
-            })
-        }
-        [] => target == head,
+        [next, rest @ ..] => ops.iter().any(|op| crunch(target, op(head, *next), rest, ops)),
+        [] => target == head
     }
 }
 
