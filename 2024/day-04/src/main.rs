@@ -3,7 +3,7 @@ use std::fs;
 fn main() {
     let input_file = fs::read_to_string("input").expect("Should be able to read file");
     let puzzle = input_file.lines()
-        .map(|line| line.chars().collect::<Vec<char>>())
+        .map(|line| line.chars().collect())
         .collect::<Vec<Vec<char>>>();
     let height = puzzle.len();
     let width = puzzle[0].len();

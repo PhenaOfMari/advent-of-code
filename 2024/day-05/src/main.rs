@@ -5,13 +5,14 @@ fn main() {
     let rules = input_file.lines()
         .filter(|line| line.contains('|'))
         .map(|line| {
-            let items = line.split('|').map(|item| item.parse::<u8>().unwrap()).collect::<Vec<u8>>();
-            (items[0], items[1])
+            let mut split = line.split('|');
+            (split.next().unwrap().parse().unwrap(),
+             split.next().unwrap().parse().unwrap())
         })
         .collect::<Vec<(u8, u8)>>();
     let updates = input_file.lines()
         .filter(|line| line.contains(','))
-        .map(|line| line.split(',').map(|item| item.parse::<u8>().unwrap()).collect::<Vec<u8>>())
+        .map(|line| line.split(',').map(|item| item.parse().unwrap()).collect())
         .collect::<Vec<Vec<u8>>>();
 
     let num_correct = updates.iter().fold(0, |sum, update| {

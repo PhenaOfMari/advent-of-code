@@ -4,7 +4,7 @@ use std::fs;
 fn main() {
     let input_file = fs::read_to_string("input").expect("Should be able to read file");
     let reports = input_file.lines()
-        .map(|line| line.split_whitespace().map(|token| token.parse().unwrap()).collect::<Vec<u8>>())
+        .map(|line| line.split_whitespace().map(|token| token.parse().unwrap()).collect())
         .collect::<Vec<Vec<u8>>>();
 
     let safe_reports = reports.iter().filter(check_safety).count();

@@ -4,8 +4,9 @@ fn main() {
     let input_file = fs::read_to_string("input").expect("Should be able to read file");
     let (mut list1, mut list2): (Vec<u32>, Vec<u32>) = input_file.lines()
         .map(|line| {
-            let tokens = line.split_whitespace().map(|token| token.parse().unwrap()).collect::<Vec<u32>>();
-            (tokens[0], tokens[1])
+            let mut split = line.split_whitespace();
+            (split.next().unwrap().parse::<u32>().unwrap(),
+             split.next().unwrap().parse::<u32>().unwrap())
         })
         .unzip();
     list1.sort();

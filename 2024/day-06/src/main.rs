@@ -19,7 +19,7 @@ fn main() {
                     }
                 }
             }
-            line.chars().collect::<Vec<char>>()
+            line.chars().collect()
         })
         .collect::<Vec<Vec<char>>>();
     let map_height = layout.len() as i16;
