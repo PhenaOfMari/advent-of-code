@@ -41,7 +41,5 @@ fn crunch(target: u64, head: u64, tail: &[u64], ops: &[fn(u64, u64) -> u64]) -> 
 }
 
 fn concat(a: u64, b: u64) -> u64 {
-    let mut concat = a.to_string();
-    concat.push_str(&b.to_string());
-    concat.parse().unwrap()
+    a * 10u64.pow(b.ilog10() + 1) + b
 }
