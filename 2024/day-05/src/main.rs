@@ -15,7 +15,7 @@ fn main() {
         .collect::<Vec<Vec<u8>>>();
 
     let num_correct = updates.iter().fold(0, |sum, update| {
-        if rules.iter().any(|rule| check_rule_failure(&rule, update)) {
+        if rules.iter().any(|rule| check_rule_failure(rule, update)) {
             sum
         } else {
             sum + update[update.len() / 2] as u16
@@ -50,7 +50,7 @@ fn main() {
     println!("{}", sum_incorrect);
 }
 
-fn check_rule_failure(rule: &&(u8, u8), update: &Vec<u8>) -> bool {
+fn check_rule_failure(rule: &(u8, u8), update: &Vec<u8>) -> bool {
     update.iter().position(|&item| item == rule.0)
         .is_some_and(|a| update.iter().position(|&item| item == rule.1)
             .is_some_and(|b| b < a))
