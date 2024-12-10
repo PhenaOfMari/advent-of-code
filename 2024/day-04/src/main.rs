@@ -7,8 +7,8 @@ fn main() {
     let puzzle = input_file.lines()
         .map(|line| line.chars().collect())
         .collect::<Grid<char>>();
-    let height = puzzle.get_height();
-    let width = puzzle.get_width();
+    let height = puzzle.height();
+    let width = puzzle.width();
 
     let directions = [(-1, -1), (-1, 0), (-1, 1), (0, -1), (0, 1), (1, -1), (1, 0), (1, 1)];
     let mut xmas_count = 0;
@@ -17,10 +17,10 @@ fn main() {
             for dir in directions.iter() {
                 let here = Cartesian::new(i as i32, j as i32);
                 let step = Cartesian::new(dir.0, dir.1);
-                if puzzle.get_coordinate(here) == Some('X')
-                    && puzzle.get_coordinate(here + step) == Some('M')
-                    && puzzle.get_coordinate(here + step * 2) == Some('A')
-                    && puzzle.get_coordinate(here + step * 3) == Some('S') {
+                if puzzle.get(here) == Some('X')
+                    && puzzle.get(here + step) == Some('M')
+                    && puzzle.get(here + step * 2) == Some('A')
+                    && puzzle.get(here + step * 3) == Some('S') {
                     xmas_count += 1;
                 }
             }
@@ -35,12 +35,12 @@ fn main() {
             let step1 = Cartesian::new(1, 1);
             let step2 = Cartesian::new(-1, 1);
             let check_m_s = |step| {
-                puzzle.get_coordinate(here - step) == Some('M')
-                    && puzzle.get_coordinate(here + step) == Some('S')
-                || (puzzle.get_coordinate(here + step) == Some('M')
-                    && puzzle.get_coordinate(here - step) == Some('S'))
+                puzzle.get(here - step) == Some('M')
+                    && puzzle.get(here + step) == Some('S')
+                || (puzzle.get(here + step) == Some('M')
+                    && puzzle.get(here - step) == Some('S'))
             };
-            if puzzle.get_coordinate(here) == Some('A') && check_m_s(step1) && check_m_s(step2) {
+            if puzzle.get(here) == Some('A') && check_m_s(step1) && check_m_s(step2) {
                 x_mas_count += 1;
             }
         }

@@ -9,7 +9,7 @@ fn main() {
         .map(|line| line.chars().collect())
         .collect::<Grid<char>>();
     let mut frequency_map = HashMap::new();
-    for (i, row) in map.get_data().iter().enumerate() {
+    for (i, row) in map.data().iter().enumerate() {
         for (j, &c) in row.iter().enumerate() {
             if c != '.' {
                 let set = frequency_map.entry(c).or_insert(HashSet::new());

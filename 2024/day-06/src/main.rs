@@ -29,9 +29,9 @@ fn main() {
     let mut position = start;
     let mut heading = Cartesian::new(-1, 0);
     loop {
-        layout.set_coordinate(position, 'X');
+        layout.set(position, 'X');
         let tentative = position + heading;
-        match layout.get_coordinate(tentative) {
+        match layout.get(tentative) {
             Some('#') => {
                 heading = rotate_heading(heading);
             },
@@ -41,7 +41,7 @@ fn main() {
             None => break
         }
     }
-    let positions_occupied = layout.get_data().iter()
+    let positions_occupied = layout.data().iter()
         .fold(0, |sum, row| sum + row.iter().filter(|c| **c == 'X').count());
     println!("{}", positions_occupied);
 
@@ -49,7 +49,7 @@ fn main() {
     let mut heading = Cartesian::new(-1, 0);
     loop {
         let tentative = position + heading;
-        let spot = layout.get_coordinate(tentative);
+        let spot = layout.get(tentative);
         if spot == None {
             break;
         } else if spot == Some('#') {
@@ -62,12 +62,12 @@ fn main() {
             let mut heading2 = Cartesian::new(-1, 0);
             loop {
                 let tentative2 = position2 + heading2;
-                let spot2 = layout.get_coordinate(tentative2);
+                let spot2 = layout.get(tentative2);
                 if spot2 == None {
                     break;
                 } else if tentative2 == tentative || spot2 == Some('#') {
                     if !previous_turns.insert((position2, heading2)) {
-                        layout.set_coordinate(tentative, 'O');
+                        layout.set(tentative, 'O');
                         break;
                     }
                     heading2 = rotate_heading(heading2);
@@ -78,7 +78,7 @@ fn main() {
             position = tentative;
         }
     }
-    let obstacle_spots = layout.get_data().iter()
+    let obstacle_spots = layout.data().iter()
         .fold(0, |sum, row| sum + row.iter().filter(|c| **c == 'O').count());
     println!("{}", obstacle_spots);
 }
