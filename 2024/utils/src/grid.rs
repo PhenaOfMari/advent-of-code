@@ -7,12 +7,18 @@ pub struct Grid<T> {
 }
 
 impl<T> Grid<T> {
+    pub fn get_data(&self) -> &Vec<Vec<T>> {
+        &self.data
+    }
+    pub fn get_height(&self) -> usize {
+        self.height
+    }
+    pub fn get_width(&self) -> usize {
+        self.width
+    }
     pub fn is_in_bounds(&self, coordinates: Cartesian) -> bool {
         coordinates.x >= 0 && coordinates.x < self.height as i32
         && coordinates.y >= 0 && coordinates.y < self.width as i32
-    }
-    pub fn get_data(&self) -> &Vec<Vec<T>> {
-        &self.data
     }
     pub fn get_coordinate(&self, coordinates: Cartesian) -> Option<T>
     where T: Clone {

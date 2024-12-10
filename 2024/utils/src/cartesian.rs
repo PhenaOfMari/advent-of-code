@@ -1,4 +1,4 @@
-use std::ops::{Add, AddAssign, Sub, SubAssign};
+use std::ops::{Add, AddAssign, Mul, Sub, SubAssign};
 
 #[derive(Copy, Clone, Debug, Eq, PartialEq, Hash)]
 pub struct Cartesian {
@@ -37,5 +37,12 @@ impl SubAssign<Self> for Cartesian {
     fn sub_assign(&mut self, other: Self) {
         self.x -= other.x;
         self.y -= other.y;
+    }
+}
+
+impl Mul<i32> for Cartesian {
+    type Output = Self;
+    fn mul(self, other: i32) -> Self::Output {
+        Self::Output {x: self.x * other, y: self.y * other}
     }
 }
