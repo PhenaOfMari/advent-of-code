@@ -1,13 +1,7 @@
 use std::collections::HashSet;
-use std::f64::consts::FRAC_PI_2;
 use std::fs;
-use utils::cartesian::Cartesian;
+use utils::cartesian::{Cartesian, CARDINALS};
 use utils::grid::Grid;
-
-const UP: Cartesian = Cartesian::new(-1, 0);
-const DOWN: Cartesian = Cartesian::new(1, 0);
-const LEFT: Cartesian = Cartesian::new(0, -1);
-const RIGHT: Cartesian = Cartesian::new(0, 1);
 
 fn main() {
     let input_file = fs::read_to_string("input").expect("Should be able to read file");
@@ -48,7 +42,7 @@ fn calculate_perimeter(grid: &Grid<char>, here: Cartesian, crop: char, checked: 
         Some(current) => {
             if current == crop {
                 if checked.insert(here) {
-                    [UP, DOWN, LEFT, RIGHT].iter().fold((1, 0), |(sum_area, sum_perimeter), &direction| {
+                    CARDINALS.iter().fold((1, 0), |(sum_area, sum_perimeter), &direction| {
                         let (area, perimeter) = calculate_perimeter(grid, here + direction, current, checked);
                         (sum_area + area, sum_perimeter + perimeter)
                     })
@@ -69,7 +63,7 @@ fn calculate_sides(grid: &Grid<char>, here: Cartesian, crop: char, checked: &mut
     match grid.get(here) {
         Some(current) => {
             if current == crop && checked.insert(here) {
-                let sides = [UP, DOWN, LEFT, RIGHT].iter().fold(0, |sum, &direction| {
+                let sides = CARDINALS.iter().fold(0, |sum, &direction| {
                     let mut count_side = grid.get(here + direction).is_none_or(|current| current != crop);
                     let mut check_side = |heading| {
                         let mut spot = here + heading;
@@ -83,8 +77,8 @@ fn calculate_sides(grid: &Grid<char>, here: Cartesian, crop: char, checked: &mut
                             spot = spot + heading;
                         }
                     };
-                    check_side(rotate_heading(direction, -1.0));
-                    check_side(rotate_heading(direction, 1.0));
+                    check_side(direction.quarter_turn(true));
+                    check_side(direction.quarter_turn(false));
                     if count_side {
                         sum + 1
                     } else {
@@ -92,7 +86,7 @@ fn calculate_sides(grid: &Grid<char>, here: Cartesian, crop: char, checked: &mut
                     }
                 });
                 counted.insert(here);
-                [UP, DOWN, LEFT, RIGHT].iter().fold((1, sides), |(sum_area, sum_sides), &direction| {
+                CARDINALS.iter().fold((1, sides), |(sum_area, sum_sides), &direction| {
                     let (area, sides) = calculate_sides(grid, here + direction, current, checked, counted);
                     (sum_area + area, sum_sides + sides)
                 })
@@ -104,10 +98,4 @@ fn calculate_sides(grid: &Grid<char>, here: Cartesian, crop: char, checked: &mut
             (0, 0)
         }
     }
-}
-
-fn rotate_heading(heading: Cartesian, signum: f64) -> Cartesian {
-    let heading = (heading.x as f64).atan2(heading.y as f64) + signum * FRAC_PI_2;
-    let (sin, cos) = heading.sin_cos();
-    Cartesian::new(sin.round() as i32, cos.round() as i32)
 }

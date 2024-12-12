@@ -1,12 +1,7 @@
 use std::collections::HashSet;
 use std::fs;
-use utils::cartesian::Cartesian;
+use utils::cartesian::{Cartesian, CARDINALS};
 use utils::grid::Grid;
-
-const UP: Cartesian = Cartesian::new(-1, 0);
-const DOWN: Cartesian = Cartesian::new(1, 0);
-const LEFT: Cartesian = Cartesian::new(0, -1);
-const RIGHT: Cartesian = Cartesian::new(0, 1);
 
 fn main() {
     let input_file = fs::read_to_string("input").expect("Should be able to read file");
@@ -49,10 +44,9 @@ fn score_trail(map: &Grid<u8>, here: Cartesian, previous: Option<u8>, path: &mut
                 }
             } else if previous.is_none_or(|p| i == p + 1) {
                 if path.insert(here) {
-                    score_trail(map, here + UP, Some(i), path)
-                        + score_trail(map, here + DOWN, Some(i), path)
-                        + score_trail(map, here + LEFT, Some(i), path)
-                        + score_trail(map, here + RIGHT, Some(i), path)
+                    CARDINALS.iter().fold(0, |sum, &direction| {
+                        sum + score_trail(map, here + direction, Some(i), path)
+                    })
                 } else {
                     0
                 }
@@ -70,10 +64,9 @@ fn rate_trail(map: &Grid<u8>, here: Cartesian, previous: Option<u8>) -> u16 {
             if previous.is_some_and(|p| i == p + 1 && i == 9) {
                 1
             } else if previous.is_none_or(|p| i == p + 1) {
-                rate_trail(map, here + UP, Some(i))
-                    + rate_trail(map, here + DOWN, Some(i))
-                    + rate_trail(map, here + LEFT, Some(i))
-                    + rate_trail(map, here + RIGHT, Some(i))
+                CARDINALS.iter().fold(0, |sum, &direction| {
+                    sum + rate_trail(map, here + direction, Some(i))
+                })
             } else {
                 0
             }

@@ -1,5 +1,4 @@
 use std::collections::HashSet;
-use std::f64::consts::FRAC_PI_2;
 use std::fs;
 use utils::cartesian::Cartesian;
 use utils::grid::Grid;
@@ -27,13 +26,13 @@ fn main() {
         .collect::<Grid<char>>();
 
     let mut position = start;
-    let mut heading = Cartesian::new(-1, 0);
+    let mut heading = Cartesian::UP;
     loop {
         layout.set(position, 'X');
         let tentative = position + heading;
         match layout.get(tentative) {
             Some('#') => {
-                heading = rotate_heading(heading);
+                heading = heading.quarter_turn(false);
             },
             Some(_) => {
                 position = tentative;
@@ -46,20 +45,20 @@ fn main() {
     println!("{}", positions_occupied);
 
     let mut position = start;
-    let mut heading = Cartesian::new(-1, 0);
+    let mut heading = Cartesian::UP;
     loop {
         let tentative = position + heading;
         let spot = layout.get(tentative);
         if spot == None {
             break;
         } else if spot == Some('#') {
-            heading = rotate_heading(heading);
+            heading = heading.quarter_turn(false);
         } else if tentative == start || spot == Some('O') {
             position = tentative;
         } else {
             let mut previous_turns = HashSet::new();
             let mut position2 = start;
-            let mut heading2 = Cartesian::new(-1, 0);
+            let mut heading2 = Cartesian::UP;
             loop {
                 let tentative2 = position2 + heading2;
                 let spot2 = layout.get(tentative2);
@@ -70,7 +69,7 @@ fn main() {
                         layout.set(tentative, 'O');
                         break;
                     }
-                    heading2 = rotate_heading(heading2);
+                    heading2 = heading2.quarter_turn(false);
                 } else {
                     position2 = tentative2;
                 }
@@ -81,10 +80,4 @@ fn main() {
     let obstacle_spots = layout.data().iter()
         .fold(0, |sum, row| sum + row.iter().filter(|c| **c == 'O').count());
     println!("{}", obstacle_spots);
-}
-
-fn rotate_heading(heading: Cartesian) -> Cartesian {
-    let heading = (heading.x as f64).atan2(heading.y as f64) + FRAC_PI_2;
-    let (sin, cos) = heading.sin_cos();
-    Cartesian::new(sin.round() as i32, cos.round() as i32)
 }
