@@ -20,7 +20,7 @@ fn count_stones(value: u64, blinks: u64, result_lookup: &mut HashMap<(u64, u64),
         return 1
     }
     match result_lookup.get(&(value, blinks)) {
-        Some(count) => *count,
+        Some(&count) => count,
         None => {
             let result = if value == 0 {
                 count_stones(1, blinks - 1, result_lookup)
