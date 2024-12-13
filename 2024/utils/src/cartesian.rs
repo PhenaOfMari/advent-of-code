@@ -23,7 +23,6 @@ pub struct Cartesian {
 }
 
 impl Cartesian {
-
     pub const UP: Cartesian = Cartesian::new(-1, 0);
     pub const RIGHT: Cartesian = Cartesian::new(0, 1);
     pub const DOWN: Cartesian = Cartesian::new(1, 0);
@@ -81,6 +80,53 @@ impl SubAssign<Self> for Cartesian {
 impl Mul<i32> for Cartesian {
     type Output = Self;
     fn mul(self, other: i32) -> Self::Output {
+        Self::Output {x: self.x * other, y: self.y * other}
+    }
+}
+
+#[derive(Copy, Clone, Debug, Eq, PartialEq, Hash)]
+pub struct BigCartesian {
+    pub x: i64,
+    pub y: i64,
+}
+
+impl BigCartesian {
+    pub const fn new(x: i64, y: i64) -> Self {
+        Self {x, y}
+    }
+}
+
+impl Add<Self> for BigCartesian {
+    type Output = Self;
+    fn add(self, other: Self) -> Self::Output {
+        Self::Output {x: self.x + other.x, y: self.y + other.y}
+    }
+}
+
+impl AddAssign<Self> for BigCartesian {
+    fn add_assign(&mut self, other: Self) {
+        self.x += other.x;
+        self.y += other.y;
+    }
+}
+
+impl Sub<Self> for BigCartesian {
+    type Output = Self;
+    fn sub(self, other: Self) -> Self::Output {
+        Self::Output {x: self.x - other.x, y: self.y - other.y}
+    }
+}
+
+impl SubAssign<Self> for BigCartesian {
+    fn sub_assign(&mut self, other: Self) {
+        self.x -= other.x;
+        self.y -= other.y;
+    }
+}
+
+impl Mul<i64> for BigCartesian {
+    type Output = Self;
+    fn mul(self, other: i64) -> Self::Output {
         Self::Output {x: self.x * other, y: self.y * other}
     }
 }
