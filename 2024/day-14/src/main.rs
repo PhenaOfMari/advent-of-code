@@ -70,16 +70,13 @@ fn calc_safety(robots: &Vec<(Cartesian, Cartesian)>) -> u32 {
         if robot.0.x < half_width {
             if robot.0.y < half_height {
                 tl += 1;
-            }
-            if robot.0.y >= ROOM_SIZE.y - half_height {
+            } else if robot.0.y >= ROOM_SIZE.y - half_height {
                 tr += 1;
             }
-        }
-        if robot.0.x >= ROOM_SIZE.x - half_width {
+        } else if robot.0.x >= ROOM_SIZE.x - half_width {
             if robot.0.y < half_height {
                 bl += 1;
-            }
-            if robot.0.y >= ROOM_SIZE.y - half_height {
+            } else if robot.0.y >= ROOM_SIZE.y - half_height {
                 br += 1;
             }
         }
