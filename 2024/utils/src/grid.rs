@@ -2,11 +2,16 @@ use crate::cartesian::Cartesian;
 
 pub struct Grid<T> {
     data: Vec<Vec<T>>,
-    width: usize,
     height: usize,
+    width: usize,
 }
 
 impl<T> Grid<T> {
+    pub fn new(height: usize, width: usize, initial_value: T) -> Self
+    where T: Clone {
+        let data = vec![vec![initial_value; width]; height];
+        Self {data, height, width}
+    }
     pub fn data(&self) -> &Vec<Vec<T>> {
         &self.data
     }
@@ -43,6 +48,6 @@ impl<T> FromIterator<Vec<T>> for Grid<T> {
         }
         let height = data.len();
         let width = data[0].len();
-        Self {data, width, height}
+        Self {data, height, width}
     }
 }

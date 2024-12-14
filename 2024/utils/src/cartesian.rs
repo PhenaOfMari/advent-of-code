@@ -1,4 +1,5 @@
-use std::ops::{Add, AddAssign, Mul, Sub, SubAssign};
+use std::fmt::Display;
+use std::ops::{Add, AddAssign, Mul, Rem, Sub, SubAssign};
 pub const CARDINALS: [Cartesian; 4] = [
     Cartesian::UP,
     Cartesian::RIGHT,
@@ -49,6 +50,12 @@ impl Cartesian {
     }
 }
 
+impl Display for Cartesian {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        write!(f, "({}, {})", self.x, self.y)
+    }
+}
+
 impl Add<Self> for Cartesian {
     type Output = Self;
     fn add(self, other: Self) -> Self::Output {
@@ -81,6 +88,13 @@ impl Mul<i32> for Cartesian {
     type Output = Self;
     fn mul(self, other: i32) -> Self::Output {
         Self::Output {x: self.x * other, y: self.y * other}
+    }
+}
+
+impl Rem<Self> for Cartesian {
+    type Output = Self;
+    fn rem(self, rhs: Cartesian) -> Self::Output {
+        Self::Output {x: self.x % rhs.x, y: self.y % rhs.y}
     }
 }
 
