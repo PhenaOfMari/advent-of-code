@@ -1,3 +1,4 @@
+use std::fmt::Display;
 use crate::cartesian::Cartesian;
 
 pub struct Grid<T> {
@@ -51,3 +52,22 @@ impl<T> FromIterator<Vec<T>> for Grid<T> {
         Self {data, height, width}
     }
 }
+
+impl<T> Display for Grid<T>
+where T: Display {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        let mut result = Ok(());
+        for i in 0..self.height {
+            for j in 0..self.width {
+                if result.is_ok() {
+                    result = self.data[i][j].fmt(f);
+                }
+            }
+            if result.is_ok() {
+                result = write!(f, "\n");
+            }
+        }
+        result
+    }
+}
+
