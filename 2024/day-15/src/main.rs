@@ -110,19 +110,15 @@ fn push(map: &mut Grid<char>, here: Cartesian, direction: Cartesian) {
     let lookahead = map.get(next).unwrap();
     if lookahead == 'O' {
         push(map, next, direction);
-    } else if direction == Cartesian::UP || direction == Cartesian::DOWN {
-        if lookahead == '[' {
-            push(map, next, direction);
-            if lookahead != current {
-                push(map, next + Cartesian::RIGHT, direction);
-            }
-        } else if lookahead == ']' {
-            if lookahead != current {
-                push(map, next + Cartesian::LEFT, direction);
-            }
-            push(map, next, direction);
+    } else if lookahead == '[' {
+        push(map, next, direction);
+        if direction == Cartesian::UP || direction == Cartesian::DOWN {
+            push(map, next + Cartesian::RIGHT, direction);
         }
-    } else if lookahead == '[' || lookahead == ']' {
+    } else if lookahead == ']' {
+        if direction == Cartesian::UP || direction == Cartesian::DOWN {
+            push(map, next + Cartesian::LEFT, direction);
+        }
         push(map, next, direction);
     }
     map.set(next, current);
