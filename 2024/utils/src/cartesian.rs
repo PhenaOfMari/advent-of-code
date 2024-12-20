@@ -48,6 +48,9 @@ impl Cartesian {
             (dir, _) => dir
         }
     }
+    pub fn distance(self, other: Cartesian) -> i32 {
+        (self.x - other.x).abs() + (self.y - other.y).abs()
+    }
 }
 
 impl Display for Cartesian {
