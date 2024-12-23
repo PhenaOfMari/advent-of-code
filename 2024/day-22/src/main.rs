@@ -41,19 +41,12 @@ fn calc_profit(initial_values: &Vec<u32>) -> [u16; 160000] {
         let mut current_n = value;
         let mut last_p;
         let mut current_p = price(value);
-        let mut i;
-        let mut j= 0;
-        let mut k= 0;
-        let mut l= 0;
+        let mut key = 0;
         for m in 0..2000 {
             current_n = next(current_n);
             last_p = current_p;
             current_p = price(current_n);
-            i = j;
-            j = k;
-            k = l;
-            l = ((current_p - last_p) + 9) as u32;
-            let key = (((i * 20 + j) * 20 + k) * 20 + l) as usize;
+            key = (key * 20 + ((current_p - last_p) + 9) as usize) % 160000;
             if m > 2 && seen_keys[key] == -1 {
                 seen_keys[key] = current_p;
                 profits[key] += current_p as u16;
