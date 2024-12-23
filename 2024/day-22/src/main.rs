@@ -5,14 +5,14 @@ fn main() {
     let input_file = fs::read_to_string("input").expect("Should be able to read file");
     let initial_values = input_file.lines()
         .map(|line| line.parse().unwrap())
-        .collect::<Vec<u64>>();
+        .collect::<Vec<u32>>();
 
     let sum = initial_values.iter().fold(0, |sum, &n| {
         let mut num = n;
         for _ in 0..2000 {
             num = next(num);
         }
-        sum + num
+        sum + num as u64
     });
     println!("{}", sum);
 
@@ -30,21 +30,21 @@ fn main() {
     println!("{}", max_bananas);
 }
 
-fn next(input: u64) -> u64 {
-    let a = prune(mix(input, input * 64));
-    let b = prune(mix(a, a / 32));
-    prune(mix(b, b * 2048))
+fn next(input: u32) -> u32 {
+    let a = prune(mix(input, input << 6));
+    let b = prune(mix(a, a >> 5));
+    prune(mix(b, b << 11))
 }
 
-fn mix(a: u64, b: u64) -> u64 {
+fn mix(a: u32, b: u32) -> u32 {
     a ^ b
 }
 
-fn prune(a: u64) -> u64 {
-    a % 16777216
+fn prune(a: u32) -> u32 {
+    a & 0xFFFFFF
 }
 
-fn build_price_data(initial_values: &Vec<u64>) -> (HashSet<u32>, HashMap<u64, HashMap<u32, u16>>) {
+fn build_price_data(initial_values: &Vec<u32>) -> (HashSet<u32>, HashMap<u32, HashMap<u32, u16>>) {
     let mut key_set = HashSet::new();
     let mut price_map = HashMap::new();
     for &value in initial_values.iter() {
@@ -79,6 +79,6 @@ fn gen_key(i: u8, j: u8, k: u8, l: u8) -> u32 {
     ((i as u32) << 24) + ((j as u32) << 16) + ((k as u32) << 8) + l as u32
 }
 
-fn price(input: u64) -> i8 {
+fn price(input: u32) -> i8 {
     (input % 10) as i8
 }
