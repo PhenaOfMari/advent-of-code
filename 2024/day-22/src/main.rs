@@ -1,6 +1,5 @@
-use std::collections::HashMap;
+use std::collections::{HashMap, HashSet};
 use std::fs;
-use std::io::Write;
 
 fn main() {
     let input_file = fs::read_to_string("input").expect("Should be able to read file");
@@ -17,27 +16,17 @@ fn main() {
     });
     println!("{}", sum);
 
-    let price_map = build_price_map(&initial_values);
+    let (key_set, price_map) = build_price_data(&initial_values);
     let mut max_bananas = 0;
-    for i in -9..10 {
-        print!("."); // This marks progress as the map reading is fairly slow over 19^4 items
-        std::io::stdout().flush().unwrap();
-        for j in -9..10 {
-            for k in -9..10 {
-                for l in -9..10 {
-                    let sequence = gen_key(i as u8, j as u8, k as u8, l as u8);
-                    let bananas = price_map.iter().fold(0, |sum, (_, map)| {
-                        match map.get(&sequence) {
-                            Some(&p) => sum + p,
-                            None => sum
-                        }
-                    });
-                    max_bananas = max_bananas.max(bananas);
-                }
+    for key in key_set.iter() {
+        let bananas = price_map.iter().fold(0, |sum, (_, map)| {
+            match map.get(key) {
+                Some(&p) => sum + p,
+                None => sum
             }
-        }
+        });
+        max_bananas = max_bananas.max(bananas);
     }
-    println!();
     println!("{}", max_bananas);
 }
 
@@ -55,7 +44,8 @@ fn prune(a: u64) -> u64 {
     a % 16777216
 }
 
-fn build_price_map(initial_values: &Vec<u64>) -> HashMap<u64, HashMap<u32, u16>> {
+fn build_price_data(initial_values: &Vec<u64>) -> (HashSet<u32>, HashMap<u64, HashMap<u32, u16>>) {
+    let mut key_set = HashSet::new();
     let mut price_map = HashMap::new();
     for &value in initial_values.iter() {
         let mut current_n = value;
@@ -75,13 +65,14 @@ fn build_price_map(initial_values: &Vec<u64>) -> HashMap<u64, HashMap<u32, u16>>
             k = l;
             l = current_p - last_p;
             let key = gen_key(i as u8, j as u8, k as u8, l as u8);
+            key_set.insert(key);
             if m > 2 && !prices.contains_key(&key) {
                 prices.insert(key, current_p as u16);
             }
         }
         price_map.insert(value, prices);
     }
-    price_map
+    (key_set, price_map)
 }
 
 fn gen_key(i: u8, j: u8, k: u8, l: u8) -> u32 {
