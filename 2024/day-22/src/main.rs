@@ -1,4 +1,3 @@
-use std::collections::{HashMap, HashSet};
 use std::fs;
 
 fn main() {
@@ -16,13 +15,8 @@ fn main() {
     });
     println!("{}", sum);
 
-    let profit_map = calc_profit(&initial_values);
-    let mut max_bananas = 0;
-    for (_, &bananas) in profit_map.iter() {
-        if bananas > max_bananas {
-            max_bananas = bananas;
-        }
-    }
+    let profits = calc_profit(&initial_values);
+    let max_bananas = profits.iter().max().unwrap();
     println!("{}", max_bananas);
 }
 
@@ -40,9 +34,10 @@ fn prune(a: u32) -> u32 {
     a & 0xFFFFFF
 }
 
-fn calc_profit(initial_values: &Vec<u32>) -> HashMap<u32, u16> {
-    let mut profit_map = HashMap::new();
+fn calc_profit(initial_values: &Vec<u32>) -> [u16; 160000] {
+    let mut profits = [0; 160000];
     for &value in initial_values.iter() {
+        let mut seen_keys = [0; 160000];
         let mut current_n = value;
         let mut last_p;
         let mut current_p = price(value);
@@ -50,7 +45,6 @@ fn calc_profit(initial_values: &Vec<u32>) -> HashMap<u32, u16> {
         let mut j= 0;
         let mut k= 0;
         let mut l= 0;
-        let mut seen_keys = HashSet::new();
         for m in 0..2000 {
             current_n = next(current_n);
             last_p = current_p;
@@ -58,24 +52,16 @@ fn calc_profit(initial_values: &Vec<u32>) -> HashMap<u32, u16> {
             i = j;
             j = k;
             k = l;
-            l = current_p - last_p;
-            let key = gen_key(i as u8, j as u8, k as u8, l as u8);
-            if m > 2 && !seen_keys.contains(&key) {
-                seen_keys.insert(key);
-                if profit_map.contains_key(&key) {
-                    let total = profit_map.get(&key).unwrap();
-                    profit_map.insert(key, total + current_p as u16);
-                } else {
-                    profit_map.insert(key, current_p as u16);
-                }
+            l = ((current_p - last_p) + 9) as u32;
+            let key = (((i * 20 + j) * 20 + k) * 20 + l) as usize;
+            if m > 2 && seen_keys[key] == 0 {
+                let profit = current_p as u16;
+                seen_keys[key] = profit;
+                profits[key] += profit;
             }
         }
     }
-    profit_map
-}
-
-fn gen_key(i: u8, j: u8, k: u8, l: u8) -> u32 {
-    ((i as u32) << 24) + ((j as u32) << 16) + ((k as u32) << 8) + l as u32
+    profits
 }
 
 fn price(input: u32) -> i8 {
