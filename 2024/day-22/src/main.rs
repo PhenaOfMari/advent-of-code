@@ -37,7 +37,7 @@ fn prune(a: u32) -> u32 {
 fn calc_profit(initial_values: &Vec<u32>) -> [u16; 160000] {
     let mut profits = [0; 160000];
     for &value in initial_values.iter() {
-        let mut seen_keys = [0; 160000];
+        let mut seen_keys = [-1; 160000];
         let mut current_n = value;
         let mut last_p;
         let mut current_p = price(value);
@@ -54,10 +54,9 @@ fn calc_profit(initial_values: &Vec<u32>) -> [u16; 160000] {
             k = l;
             l = ((current_p - last_p) + 9) as u32;
             let key = (((i * 20 + j) * 20 + k) * 20 + l) as usize;
-            if m > 2 && seen_keys[key] == 0 {
-                let profit = current_p as u16;
-                seen_keys[key] = profit;
-                profits[key] += profit;
+            if m > 2 && seen_keys[key] == -1 {
+                seen_keys[key] = current_p;
+                profits[key] += current_p as u16;
             }
         }
     }
